@@ -34,3 +34,13 @@ func (d *Dispatcher) Handle(cmd string, args []string) error {
 
 	return handler(args)
 }
+
+// The following below are handler function wrappers for testing
+
+func (d *Dispatcher) CreateParkingLot(args []string) error { return d.createParkingLot(args) }
+func (d *Dispatcher) Park(args []string) error             { return d.park(args) }
+func (d *Dispatcher) Leave(args []string) error            { return d.leave(args) }
+func (d *Dispatcher) Status(args []string) error           { return d.status(args) }
+
+// Public parkingLot getter for testing
+func (d *Dispatcher) GetParkingLot() *domain.ParkingLot { return d.parkingLot }
