@@ -22,10 +22,7 @@ func (d *Dispatcher) createParkingLot(args []string) error {
 		return err
 	}
 
-	fmt.Println(parkingLot)
-
 	d.parkingLot = parkingLot
-
 	return nil
 }
 
@@ -44,7 +41,6 @@ func (d *Dispatcher) park(args []string) error {
 	}
 
 	fmt.Printf("Allocated slot number: %d\n", parkingSlot.ID)
-
 	return nil
 }
 
@@ -74,7 +70,6 @@ func (d *Dispatcher) leave(args []string) error {
 
 	fmt.Printf("Registration number %s with Slot Number %d is free with Charge $%d\n",
 		args[0], parkingSlot.ID, parkingCharge)
-
 	return nil
 }
 
