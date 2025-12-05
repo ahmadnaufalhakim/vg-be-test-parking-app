@@ -7,6 +7,7 @@ import (
 
 	"github.com/ahmadnaufalhakim/vg-be-test-parking-app/internal/cli"
 	"github.com/ahmadnaufalhakim/vg-be-test-parking-app/internal/io"
+	"github.com/ahmadnaufalhakim/vg-be-test-parking-app/internal/utils"
 )
 
 func main() {
@@ -31,9 +32,7 @@ func main() {
 
 		err := dispatcher.Handle(cmd, args)
 		if err != nil {
-			errMsg := err.Error()
-			errMsg = strings.ToUpper(errMsg[:1]) + errMsg[1:]
-			fmt.Println(errMsg)
+			utils.PrintCapitalizedError(err)
 		}
 	}
 }
