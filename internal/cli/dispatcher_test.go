@@ -67,7 +67,11 @@ func TestDispatcher_CreateParkingLot_InvalidArgs(t *testing.T) {
 
 func TestDispatcher_Park_Success(t *testing.T) {
 	d := cli.NewDispatcher()
-	d.Handle("create_parking_lot", []string{"2"})
+
+	err := d.Handle("create_parking_lot", []string{"2"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 
 	output := captureOutput(func() {
 		err := d.Handle("park", []string{"KA-01-HH-1234"})
@@ -93,8 +97,16 @@ func TestDispatcher_Park_NoLot(t *testing.T) {
 
 func TestDispatcher_Leave_Success(t *testing.T) {
 	d := cli.NewDispatcher()
-	d.Handle("create_parking_lot", []string{"2"})
-	d.Handle("park", []string{"KA-01-HH-1234"})
+
+	err := d.Handle("create_parking_lot", []string{"2"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	err = d.Handle("park", []string{"KA-01-HH-1234"})
+	if err != nil {
+		t.Fatalf("unexpected park error: %v", err)
+	}
 
 	output := captureOutput(func() {
 		err := d.Handle("leave", []string{"KA-01-HH-1234", "4"})
@@ -111,9 +123,13 @@ func TestDispatcher_Leave_Success(t *testing.T) {
 
 func TestDispatcher_Leave_NotFound(t *testing.T) {
 	d := cli.NewDispatcher()
-	d.Handle("create_parking_lot", []string{"2"})
 
-	err := d.Handle("leave", []string{"NOT-FOUND", "4"})
+	err := d.Handle("create_parking_lot", []string{"2"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	err = d.Handle("leave", []string{"NOT-FOUND", "4"})
 	if err == nil {
 		t.Fatalf("expected error for non-existent car")
 	}
@@ -121,9 +137,21 @@ func TestDispatcher_Leave_NotFound(t *testing.T) {
 
 func TestDispatcher_Status(t *testing.T) {
 	d := cli.NewDispatcher()
-	d.Handle("create_parking_lot", []string{"2"})
-	d.Handle("park", []string{"KA-01-HH-1234"})
-	d.Handle("park", []string{"KA-01-HH-9999"})
+
+	err := d.Handle("create_parking_lot", []string{"2"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	err = d.Handle("park", []string{"KA-01-HH-1234"})
+	if err != nil {
+		t.Fatalf("unexpected park error: %v", err)
+	}
+
+	err = d.Handle("park", []string{"KA-01-HH-9999"})
+	if err != nil {
+		t.Fatalf("unexpected park error: %v", err)
+	}
 
 	output := captureOutput(func() {
 		err := d.Handle("status", []string{})
