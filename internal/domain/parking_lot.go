@@ -1,4 +1,4 @@
-package internal
+package domain
 
 import (
 	"container/heap"
@@ -6,9 +6,9 @@ import (
 )
 
 type ParkingLot struct {
-	availableSlots *ParkingHeap
-	occupiedSlots  map[string]*ParkingSlot
-	capacity       int
+	AvailableSlots *ParkingHeap
+	OccupiedSlots  map[string]*ParkingSlot
+	Capacity       int
 }
 
 func NewParkingLot(capacity int) (*ParkingLot, error) {
@@ -30,18 +30,18 @@ func NewParkingLot(capacity int) (*ParkingLot, error) {
 	}
 
 	return &ParkingLot{
-		availableSlots: parkingHeap,
-		occupiedSlots:  map[string]*ParkingSlot{},
-		capacity:       capacity,
+		AvailableSlots: parkingHeap,
+		OccupiedSlots:  map[string]*ParkingSlot{},
+		Capacity:       capacity,
 	}, nil
 }
 
 func (pl *ParkingLot) IsEmpty() bool {
-	return pl.availableSlots.Len() == pl.capacity
+	return pl.AvailableSlots.Len() == pl.Capacity
 }
 
 func (pl *ParkingLot) IsFull() bool {
-	return pl.availableSlots.Len() == 0
+	return pl.AvailableSlots.Len() == 0
 }
 
 func (pl *ParkingLot) ParkCar(carNumber string) (*ParkingSlot, error) {
@@ -49,21 +49,21 @@ func (pl *ParkingLot) ParkCar(carNumber string) (*ParkingSlot, error) {
 		return nil, fmt.Errorf("sorry, parking lot is full")
 	}
 
-	if parkingSlot, ok := pl.occupiedSlots[carNumber]; ok {
+	if parkingSlot, ok := pl.OccupiedSlots[carNumber]; ok {
 		return nil, fmt.Errorf(
 			"registration number %s is already parked in Slot Number %d",
 			parkingSlot.CarNumber, parkingSlot.ID,
 		)
 	}
 
-	parkingSlot, ok := heap.Pop(pl.availableSlots).(*ParkingSlot)
+	parkingSlot, ok := heap.Pop(pl.AvailableSlots).(*ParkingSlot)
 	if !ok {
 		return nil, fmt.Errorf("ParkingSlot type assertion failed")
 	}
 
 	parkingSlot.Available = false
 	parkingSlot.CarNumber = carNumber
-	pl.occupiedSlots[carNumber] = parkingSlot
+	pl.OccupiedSlots[carNumber] = parkingSlot
 
 	return parkingSlot, nil
 }
@@ -73,7 +73,7 @@ func (pl *ParkingLot) RemoveCar(carNumber string) (*ParkingSlot, error) {
 		return nil, fmt.Errorf("sorry, parking lot is empty")
 	}
 
-	parkingSlot, ok := pl.occupiedSlots[carNumber]
+	parkingSlot, ok := pl.OccupiedSlots[carNumber]
 	if !ok {
 		return nil, fmt.Errorf("registration number %s not found", carNumber)
 	}
@@ -81,8 +81,8 @@ func (pl *ParkingLot) RemoveCar(carNumber string) (*ParkingSlot, error) {
 	parkingSlot.Available = true
 	parkingSlot.CarNumber = ""
 
-	heap.Push(pl.availableSlots, parkingSlot)
-	delete(pl.occupiedSlots, carNumber)
+	heap.Push(pl.AvailableSlots, parkingSlot)
+	delete(pl.OccupiedSlots, carNumber)
 
 	return parkingSlot, nil
 }

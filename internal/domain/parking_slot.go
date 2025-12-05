@@ -1,4 +1,4 @@
-package internal
+package domain
 
 type ParkingSlot struct {
 	ID                int

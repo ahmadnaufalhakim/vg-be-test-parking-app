@@ -1,4 +1,4 @@
-package internal
+package domain
 
 // ParkingHeap implements heap interface from
 // Golang's built-in heap library
