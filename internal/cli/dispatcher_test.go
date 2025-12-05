@@ -53,8 +53,12 @@ func TestDispatcher_CreateParkingLot_InvalidArgs(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expected error for missing arguments")
 	}
+}
 
-	err = d.Handle("create_parking_lot", []string{"-6"})
+func TestDispatcher_CreateParkingLot_InvalidCapacity(t *testing.T) {
+	d := cli.NewDispatcher()
+
+	err := d.Handle("create_parking_lot", []string{"-6"})
 	if err == nil {
 		t.Fatalf("expected error for invalid capacity")
 	}
