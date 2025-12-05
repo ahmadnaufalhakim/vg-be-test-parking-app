@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/ahmadnaufalhakim/vg-be-test-parking-app/internal/cli"
+	"github.com/ahmadnaufalhakim/vg-be-test-parking-app/internal/testutils"
 )
 
 func TestCreateParkingLot_Success(t *testing.T) {
@@ -50,13 +51,12 @@ func TestPark_Success(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	out := captureOutput(func() {
+	out := testutils.CaptureOutput(func() {
 		err := d.Park([]string{"KA-01-HH-1234"})
 		if err != nil {
 			t.Fatalf("unexpected park error: %v", err)
 		}
 	})
-
 	expected := "Allocated slot number: 1\n"
 	if out != expected {
 		t.Fatalf("expected %q, got %q", expected, out)
@@ -94,13 +94,12 @@ func TestLeave_Success(t *testing.T) {
 		t.Fatalf("unexpected park error: %v", err)
 	}
 
-	out := captureOutput(func() {
+	out := testutils.CaptureOutput(func() {
 		err := d.Leave([]string{"KA-01-HH-1234", "4"})
 		if err != nil {
 			t.Fatalf("unexpected leave error: %v", err)
 		}
 	})
-
 	expected := "Registration number KA-01-HH-1234 with Slot Number 1 is free with Charge $30\n"
 	if out != expected {
 		t.Fatalf("expected %q, got %q", expected, out)
@@ -167,13 +166,12 @@ func TestStatus_Success(t *testing.T) {
 		t.Fatalf("unexpected park error: %v", err)
 	}
 
-	out := captureOutput(func() {
+	out := testutils.CaptureOutput(func() {
 		err := d.Status([]string{})
 		if err != nil {
 			t.Fatalf("unexpected status error: %v", err)
 		}
 	})
-
 	expected :=
 		"Slot No.\tRegistration No.\n" +
 			"1\tKA-01-HH-1234\n" +

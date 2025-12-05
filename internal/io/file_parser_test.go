@@ -27,7 +27,6 @@ func TestExtractCommandsFromFile_Success(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-
 	expected := []string{
 		"create_parking_lot 4",
 		"park CAR-01",
@@ -35,11 +34,9 @@ func TestExtractCommandsFromFile_Success(t *testing.T) {
 		"park CAR-02",
 		"leave CAR-03 5",
 	}
-
 	if len(commands) != len(expected) {
 		t.Fatalf("expected %d commands, got %d", len(expected), len(commands))
 	}
-
 	for i, cmd := range commands {
 		if cmd != expected[i] {
 			t.Fatalf("expected command %q at index %d, got %q", expected[i], i, cmd)
@@ -67,7 +64,6 @@ func TestExtractCommandsFromFile_EmptyFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-
 	if len(commands) != 0 {
 		t.Fatalf("expected 0 commands from empty file, got %d", len(commands))
 	}

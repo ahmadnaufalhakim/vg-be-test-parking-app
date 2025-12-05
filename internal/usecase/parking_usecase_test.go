@@ -1,27 +1,12 @@
 package usecase_test
 
 import (
-	"bytes"
-	"os"
 	"testing"
 
 	"github.com/ahmadnaufalhakim/vg-be-test-parking-app/internal/domain"
+	"github.com/ahmadnaufalhakim/vg-be-test-parking-app/internal/testutils"
 	"github.com/ahmadnaufalhakim/vg-be-test-parking-app/internal/usecase"
 )
-
-func captureOutput(f func()) string {
-	var buf bytes.Buffer
-	stdout := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-
-	f()
-
-	w.Close()
-	os.Stdout = stdout
-	buf.ReadFrom(r)
-	return buf.String()
-}
 
 func TestCreateParkingLot(t *testing.T) {
 	pl, err := usecase.CreateParkingLot(3)
@@ -121,15 +106,13 @@ func TestCalculateParkingCharge(t *testing.T) {
 func TestStatus_EmptyLot(t *testing.T) {
 	pl, _ := domain.NewParkingLot(3)
 
-	output := captureOutput(func() {
+	output := testutils.CaptureOutput(func() {
 		err := usecase.Status(pl)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
 	})
-
 	expected := "Slot No.\tRegistration No.\n"
-
 	if output != expected {
 		t.Fatalf("expected:\n%q\ngot:\n%q", expected, output)
 	}
@@ -150,13 +133,12 @@ func TestStatus_TwoCars_1And2(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	output := captureOutput(func() {
+	output := testutils.CaptureOutput(func() {
 		err := usecase.Status(pl)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
 	})
-
 	expected :=
 		"Slot No.\tRegistration No.\n" +
 			"1\tCAR-A\n" +
@@ -193,14 +175,12 @@ func TestStatus_TwoCars_1And3(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	output := captureOutput(func() {
+	output := testutils.CaptureOutput(func() {
 		err := usecase.Status(pl)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
 	})
-
-	// output must be ordered by slot ID (1 then 3)
 	expected :=
 		"Slot No.\tRegistration No.\n" +
 			"1\tCAR-A\n" +

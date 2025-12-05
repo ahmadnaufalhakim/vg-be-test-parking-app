@@ -1,26 +1,11 @@
 package cli_test
 
 import (
-	"bytes"
-	"os"
 	"testing"
 
 	"github.com/ahmadnaufalhakim/vg-be-test-parking-app/internal/cli"
+	"github.com/ahmadnaufalhakim/vg-be-test-parking-app/internal/testutils"
 )
-
-func captureOutput(f func()) string {
-	var buf bytes.Buffer
-	stdout := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-
-	f()
-
-	w.Close()
-	os.Stdout = stdout
-	buf.ReadFrom(r)
-	return buf.String()
-}
 
 func TestDispatcher_UnknownCommand(t *testing.T) {
 	d := cli.NewDispatcher()
@@ -77,13 +62,12 @@ func TestDispatcher_Park_Success(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	output := captureOutput(func() {
+	output := testutils.CaptureOutput(func() {
 		err := d.Handle("park", []string{"KA-01-HH-1234"})
 		if err != nil {
 			t.Fatalf("unexpected park error: %v", err)
 		}
 	})
-
 	expected := "Allocated slot number: 1\n"
 	if output != expected {
 		t.Fatalf("expected %q got %q", expected, output)
@@ -112,13 +96,12 @@ func TestDispatcher_Leave_Success(t *testing.T) {
 		t.Fatalf("unexpected park error: %v", err)
 	}
 
-	output := captureOutput(func() {
+	output := testutils.CaptureOutput(func() {
 		err := d.Handle("leave", []string{"KA-01-HH-1234", "4"})
 		if err != nil {
 			t.Fatalf("unexpected leave error: %v", err)
 		}
 	})
-
 	expected := "Registration number KA-01-HH-1234 with Slot Number 1 is free with Charge $30\n"
 	if output != expected {
 		t.Fatalf("expected %q got %q", expected, output)
@@ -157,18 +140,16 @@ func TestDispatcher_Status(t *testing.T) {
 		t.Fatalf("unexpected park error: %v", err)
 	}
 
-	output := captureOutput(func() {
+	output := testutils.CaptureOutput(func() {
 		err := d.Handle("status", []string{})
 		if err != nil {
 			t.Fatalf("unexpected status error: %v", err)
 		}
 	})
-
 	expected :=
 		"Slot No.\tRegistration No.\n" +
 			"1\tKA-01-HH-1234\n" +
 			"2\tKA-01-HH-9999\n"
-
 	if output != expected {
 		t.Fatalf("\nEXPECTED:\n%s\nGOT:\n%s", expected, output)
 	}
