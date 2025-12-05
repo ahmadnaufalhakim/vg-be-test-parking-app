@@ -75,13 +75,13 @@ func (pl *ParkingLot) RemoveCar(carNumber string) (*ParkingSlot, error) {
 
 	parkingSlot, ok := pl.occupiedSlots[carNumber]
 	if !ok {
-		return nil, fmt.Errorf("registration number %s not found", parkingSlot.CarNumber)
+		return nil, fmt.Errorf("registration number %s not found", carNumber)
 	}
-
-	heap.Push(pl.availableSlots, parkingSlot)
 
 	parkingSlot.Available = true
 	parkingSlot.CarNumber = ""
+
+	heap.Push(pl.availableSlots, parkingSlot)
 	delete(pl.occupiedSlots, carNumber)
 
 	return parkingSlot, nil
