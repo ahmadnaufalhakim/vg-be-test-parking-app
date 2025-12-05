@@ -3,25 +3,37 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
-	"github.com/ahmadnaufalhakim/vg-be-test-parking-app/internal"
+	"github.com/ahmadnaufalhakim/vg-be-test-parking-app/internal/cli"
+	"github.com/ahmadnaufalhakim/vg-be-test-parking-app/internal/io"
 )
 
 func main() {
-	fmt.Println(os.Args)
-
 	if len(os.Args) < 2 {
 		fmt.Println("missing input file")
 		return
 	}
 
-	cmds, err := internal.ExtractCommandsFromFile(os.Args[1])
+	filePath := os.Args[1]
+	cmds, err := io.ExtractCommandsFromFile(filePath)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Error reading file: %v\n", err)
 		return
 	}
 
-	for _, cmd := range cmds {
-		fmt.Println(cmd)
+	dispatcher := cli.NewDispatcher()
+
+	for _, line := range cmds {
+		parts := strings.Split(line, " ")
+		cmd := parts[0]
+		args := parts[1:]
+
+		err := dispatcher.Handle(cmd, args)
+		if err != nil {
+			errMsg := err.Error()
+			errMsg = strings.ToUpper(errMsg[:1]) + errMsg[1:]
+			fmt.Println(errMsg)
+		}
 	}
 }
